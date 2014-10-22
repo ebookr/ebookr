@@ -1,31 +1,27 @@
-var expect = require('chai').expect,
-		ebookr = require('../src/ebookr');
+var expect = require('chai').expect;
 
 describe('When adding renderer to tokens', function () {
-	var bkr;
+	var ebookr;
 
-	beforeEach(function (done) {
-		ebookr().then(function (inst) {
-			bkr = inst;
-			done();
-		});
+	beforeEach(function () {
+		ebookr = require('../src/ebookr').new();
 	});
-
+	
 	it('should be able to add renderer individually', function () {
 		var fn = function () {};
-		bkr.addRenderer('test', fn);
-		expect(bkr.tokens.test).to.be.an('object');
-		expect(bkr.tokens.test.renderer).to.equal(fn);
-		expect(bkr.tokens.test.renderer.args).to.be.empty;
+		ebookr.addRenderer('test', fn);
+		expect(ebookr.tokens.test).to.be.an('object');
+		expect(ebookr.tokens.test.renderer).to.equal(fn);
+		expect(ebookr.tokens.test.renderer.args).to.be.empty;
 	});
 
 	it('should be able to add renderers en masse', function () {
 		var fn1 = function (foo) {},
 				fn2 = function (foo, bar) {};
-		bkr.addRenderers({'test1': fn1,'test2': fn2});
-		expect(bkr.tokens.test1.renderer).to.equal(fn1);
-		expect(bkr.tokens.test1.renderer.args).to.eql(['foo']);
-		expect(bkr.tokens.test2.renderer).to.equal(fn2);
-		expect(bkr.tokens.test2.renderer.args).to.eql(['foo', 'bar']);
+		ebookr.addRenderers({'test1': fn1,'test2': fn2});
+		expect(ebookr.tokens.test1.renderer).to.equal(fn1);
+		expect(ebookr.tokens.test1.renderer.args).to.eql(['foo']);
+		expect(ebookr.tokens.test2.renderer).to.equal(fn2);
+		expect(ebookr.tokens.test2.renderer.args).to.eql(['foo', 'bar']);
 	});
 });

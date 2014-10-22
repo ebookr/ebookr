@@ -1,45 +1,39 @@
 var expect = require('chai').expect,
 		mockrequire = require('mockrequire'),
-		sinon = require('sinon'),
-		ebookr = require('../src/ebookr');
+		sinon = require('sinon');
 
 describe('When extending ebookr', function () {
-	var spy, bkr;
+	var spy, bkr, ebookr;
 
-	beforeEach(function (done) {
+	beforeEach(function () {
+		ebookr = require('../src/ebookr').new();
 		spy = sinon.spy(function () {
-			ebookr().then(function (bkr) {
-				bkr.addParser('test', function () {});
-			});
+			ebookr.addParser('test', function () {});
 		});
-		mockrequire('../src/ebookr', {
+		bkr = mockrequire('../src/ebookr', {
 			'ebookr-test': spy,
 			'extend': require('extend'),
 			'util': require('util'),
-			'q': require('q'),
-			'child_process': {
-				exec: function (cmd, cb) {
-					cb(null, '{"ebookr-test": {}}', null);
-				}
-			}
-		})().then(function (inst) {
-			bkr = inst;
-			done();
+			'q': require('q')
 		});
 	});
 
-	afterEach(function () {
-		bkr.clear();
-	});
-
-	it('should load module', function () {
+	it('can load modules from an object', function () {
+		bkr.loadExtensions({
+			'ebookr-test': 42
+		});
 		expect(spy.called).to.be.true;
+		expect(spy.getCall(0).args[0]).to.equal(42);
 	});
 
-	it('should add tokens', function (done) {
-		ebookr().then(function (inst) {
-			expect(inst.tokens.test).to.exist;
-			done();
-		});
+	it('can load modules from an array', function () {
+		bkr.loadExtensions(['ebookr-test']);
+		expect(spy.called).to.be.true;
+		expect(spy.getCall(0).args[0]).to.be.undefined;
+	});
+
+	it('should add tokens', function () {
+		bkr.loadExtensions(['ebookr-test']);
+		expect(ebookr.tokens.test).to.exist;
 	});
 });
