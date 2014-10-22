@@ -31,5 +31,13 @@
   "dependencies": {
     "extend": "^2.0.0",
     "q": "^1.0.1"
+  },
+  "bugs": {
+    "url": "https://github.com/ebookr/ebookr/issues"
+  },
+  "homepage": "https://github.com/ebookr/ebookr",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
   }
 }
