@@ -4,7 +4,7 @@ describe('When adding renderer to tokens', function () {
 	var ebookr;
 
 	beforeEach(function () {
-		ebookr = require('../src/ebookr').new();
+		ebookr = require('../lib/ebookr').new();
 	});
 	
 	it('should be able to add renderer individually', function () {

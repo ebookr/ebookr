@@ -6,11 +6,11 @@ describe('When extending ebookr', function () {
 	var spy, bkr, ebookr;
 
 	beforeEach(function () {
-		ebookr = require('../src/ebookr').new();
+		ebookr = require('../lib/ebookr').new();
 		spy = sinon.spy(function () {
 			ebookr.addParser('test', function () {});
 		});
-		bkr = mockrequire('../src/ebookr', {
+		bkr = mockrequire('../lib/ebookr', {
 			'ebookr-test': spy,
 			'extend': require('extend'),
 			'util': require('util'),

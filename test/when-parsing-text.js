@@ -4,7 +4,7 @@ describe('When parsing text', function () {
 	var ebookr;
 
 	beforeEach(function () {
-		ebookr = require('../src/ebookr').new();
+		ebookr = require('../lib/ebookr').new();
 	});
 
 	it('should trigger token when found', function () {

@@ -4,7 +4,7 @@ describe('When adding parser to tokens', function () {
 	var ebookr;
 
 	beforeEach(function () {
-		ebookr = require('../src/ebookr').new();
+		ebookr = require('../lib/ebookr').new();
 	});
 	
 	it('should be able to add parsers individually', function () {

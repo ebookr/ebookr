@@ -1,5 +1,5 @@
 var expect = require('chai').expect,
-		ebookr = require('../src/ebookr'),
+		ebookr = require('../lib/ebookr'),
 		q = require('q');
 
 describe('When instantiating ebookr', function () {
