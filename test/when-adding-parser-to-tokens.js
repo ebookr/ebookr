@@ -4,8 +4,15 @@ var expect = require('chai').expect,
 describe('When adding parser to tokens', function () {
 	var bkr;
 
-	beforeEach(function () {
-		bkr = ebookr();
+	beforeEach(function (done) {
+		ebookr().then(function (instance) {
+			bkr = instance;
+			done();
+		});
+	});
+
+	afterEach(function () {
+		bkr.clear();
 	});
 
 	it('should be able to add parsers individually', function () {

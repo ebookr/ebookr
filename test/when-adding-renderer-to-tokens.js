@@ -4,8 +4,11 @@ var expect = require('chai').expect,
 describe('When adding renderer to tokens', function () {
 	var bkr;
 
-	beforeEach(function () {
-		bkr = ebookr();
+	beforeEach(function (done) {
+		ebookr().then(function (inst) {
+			bkr = inst;
+			done();
+		});
 	});
 
 	it('should be able to add renderer individually', function () {

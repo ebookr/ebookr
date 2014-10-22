@@ -1,17 +1,18 @@
 var expect = require('chai').expect,
-		ebookr = require('../src/ebookr');
+		ebookr = require('../src/ebookr'),
+		q = require('q');
 
 describe('When instantiating ebookr', function () {
-	it('should contain no tokens', function () {
-		var bkr = ebookr();
-		expect(bkr.tokens).to.be.empty;
+	it('should return as a promise', function () {
+		expect(ebookr().then).to.exist;
 	});
 
-	it('should act like a singleton', function () {
-		var bkr1 = ebookr(),
-				bkr2 = ebookr(),
-				fn = function () {};
-		bkr1.addParser('test', fn);
-		expect(bkr2.tokens).to.equal(bkr1.tokens);
+	it('should act like a singleton', function (done) {
+		var fn = function () {};
+		q.allSettled([ebookr(), ebookr()]).then(function (bkrs) {
+			bkrs[0].value.addParser('test', fn);
+			expect(bkrs[0].value.tokens).to.equal(bkrs[1].value.tokens);
+			done();
+		});
 	});
 });

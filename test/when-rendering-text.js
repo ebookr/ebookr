@@ -4,8 +4,11 @@ var expect = require('chai').expect,
 describe('When rendering text', function () {
 	var bkr;
 
-	beforeEach(function () {
-		bkr = ebookr();
+	beforeEach(function (done) {
+		ebookr().then(function (instance) {
+			bkr = instance;
+			done();
+		});
 	});
 
 	afterEach(function () {

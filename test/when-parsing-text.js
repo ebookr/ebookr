@@ -4,8 +4,11 @@ var expect = require('chai').expect,
 describe('When parsing text', function () {
 	var bkr;
 
-	beforeEach(function () {
-		bkr = ebookr();
+	beforeEach(function (done) {
+		ebookr().then(function (inst) {
+			bkr = inst;
+			done();
+		});
 	});
 
 	afterEach(function () {

@@ -1,5 +1,6 @@
 var extend = require('extend'),
-		util = require('util');
+		util = require('util'),
+		q = require('q');
 var ebookr;
 
 module.exports = function () {
@@ -64,8 +65,12 @@ module.exports = function () {
 		this[kind] = parseFunction(fn);
 	};
 
-	var Ebookr = function () {
+	// object Ebookr
+	var Ebookr = function (modules) {
 		this.tokens = {};
+		modules.forEach(function (module) {
+			require(module)();
+		});
 	};
 	Ebookr.prototype.addParser = function (tokenName, fn) {
 		this.tokens[tokenName] = this.tokens[tokenName] || new Token(tokenName);
@@ -115,6 +120,21 @@ module.exports = function () {
 		return renderedText;		
 	};
 
-	ebookr = ebookr || new Ebookr();
+	var loadEbookr = function () {
+		var bkr = q.defer();
+		require('child_process').exec('npm ls --json', function (err, stdout, stderr) {
+			var moduleTree = JSON.parse(stdout);
+			var modules = Object.keys(moduleTree).reduce(function (list, currentValue) {
+				if (currentValue.substr(0, 7) == 'ebookr-') {
+					list.push(currentValue);
+				}
+				return list;
+			}, []);
+			bkr.resolve(new Ebookr(modules));
+		});
+		return bkr.promise;
+	};
+
+	ebookr = ebookr || loadEbookr();
 	return ebookr;
 };
