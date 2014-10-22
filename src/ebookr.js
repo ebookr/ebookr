@@ -4,6 +4,22 @@ var ebookr;
 
 module.exports = function () {
 	// private functions
+	var orderArgs = function (attributes, fnArgs) {
+		return fnArgs.map(function (key) {
+			return attributes[key];
+		});
+	};
+
+	var parseAttributes = function (args) {
+		var attributes = {};
+		args.forEach(function (arg) {
+			if (arg === '') return;
+			var parts = arg.split('=');
+			attributes[parts[0]] = parts[1].replace(/\"/g, '');
+		});
+		return attributes;
+	};
+
 	var parseFunction = function (fn) {
 		fn.args = parseSignatur(fn.toString());
 		return fn;
@@ -15,6 +31,27 @@ module.exports = function () {
 		return start == end ? [] : src.substr(start, end - start).split(',').map(function (arg) {
 			return arg.trim();
 		});
+	};
+
+	var parseTag = function (tokens, src) {
+		var start = src.search(/\<ebookr/g);
+		var end = src.substr(Math.min(start, 0)).search(/\>/g);
+		if (start == -1 || end == -1) return false;
+		var tokenName = src.substr(start).match(/\<ebookr:\w+/)[0].substr(8);
+		var argStart = start + tokenName.length + 9;
+		var tokenArgs = src.substr(argStart, end - argStart).split('" ');
+		var attributes = parseAttributes(tokenArgs);
+		var token = tokens[tokenName];
+		if (!token) {
+			throw new Error(util.format('Tried to parse unknown token: <ebookr:%s>', tokenName));
+		}
+		return {
+			start: start,
+			end: end,
+			string: src.substr(start, end - start + 1),
+			token: token,
+			attributes: attributes
+		};
 	};
 
 	// object Token
@@ -54,39 +91,28 @@ module.exports = function () {
 		this.tokens = {};
 	};
 	Ebookr.prototype.parse = function (src) {
-		var orderArgs = function (attributes, fnArgs) {
-			return fnArgs.map(function (key) {
-				return attributes[key];
-			});
-		};
-		var parseAttributes = function (args) {
-			var attributes = {};
-			args.forEach(function (arg) {
-				if (arg === '') return;
-				var parts = arg.split('=');
-				attributes[parts[0]] = parts[1].replace(/\"/g, '');
-			});
-			return attributes;
-		};
 		var parse = function () {
-			var start = src.search(/\<ebookr/g);
-			var end = src.substr(Math.min(start, 0)).search(/\>/g);
-			if (start == -1 || end == -1) return false;
-			var tokenName = src.substr(start).match(/\<ebookr:\w+/)[0].substr(8);
-			var argStart = start + tokenName.length + 9;
-			var tokenArgs = src.substr(argStart, end - argStart).split('" ');
-			var attributes = parseAttributes(tokenArgs);
-			var token = this.tokens[tokenName];
-			var parser = token.parser;
-			if (!token) {
-				throw new Error(util.format('Tried to parse unknown token: <ebookr:%s>', tokenName));
-			}
-			var args = orderArgs(attributes, parser.args);
-			parser.apply(this, args);
-			src = src.substr(end + 1);
+			var tag = parseTag(this.tokens, src);
+			if (!tag) return false;
+			tag.token.parser.apply(this, orderArgs(tag.attributes, tag.token.parser.args));
+			src = src.substr(tag.end + 1);
 			return true;
 		};
 		while(parse.call(this));
+	};
+	Ebookr.prototype.render = function (src) {
+		var renderedText = src;
+		var render = function () {
+			var tag = parseTag(this.tokens, src);
+			if (!tag) return false;
+			renderedText = renderedText.replace(tag.string, function () {
+				return tag.token.renderer.apply(this, orderArgs(tag.attributes, tag.token.renderer.args));
+			}, 'g');
+			src = src.substr(tag.end + 1);
+			return true;
+		};
+		while(render.call(this));
+		return renderedText;		
 	};
 
 	ebookr = ebookr || new Ebookr();
