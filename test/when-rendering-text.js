@@ -18,6 +18,10 @@ describe('When rendering text', function () {
 		expect(ebookr.parse('foo <foo> bar <foo >baz').render()).to.equal('foo test bar testbaz');
 	});
 
+	it('should drop rendering unknown tokens', function () {
+		expect(ebookr.parse('foo <bar> bar').render()).to.equal('foo <bar> bar');
+	});
+
 	it('should parse attributes', function () {
 		ebookr.addRenderer('foo', function (one, two) {
 			return one + two;

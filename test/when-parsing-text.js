@@ -15,10 +15,10 @@ describe('When parsing text', function () {
 		expect(spy.calledTwice).to.be.true;
 	});
 
-	it('should trigger exception when unknown token found', function () {
-		expect(function () {
-			ebookr.parse('foo <foo> bar');
-		}).to.throw(Error);
+	it('should log warning when unknown token found', function () {
+		sinon.spy(console, 'warn');
+		ebookr.parse('foo <foo> bar');
+		expect(console.warn.calledOnce);
 	});
 
 	it('should parse attributes', function () {
