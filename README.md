@@ -19,6 +19,18 @@ Setup
 3. Extend it with [extensions](https://github.com/ebookr/ebookr/wiki/Available_extensions)
 4. Start using it!
 
+Extension interface
+-------------------
+
+The interface of extensions is HTML-inspired, with tags and attributes.
+
+    <closed-tag attr="value" />
+    <open-tag attr1="value" attr2="value">Some text</open-tag>
+
+Extensions are added as parsers (runs through text to read metadata) and renderers (converts it into whatever output is required). Although many of these things are already available as extensions to the [markdown parsed by Pandoc](http://johnmacfarlane.net/pandoc/README.html#pandocs-markdown), these extensions aim to deliver more HTML counterparts to popular [LaTeX packages](http://en.wikibooks.org/wiki/LaTeX/Package_Reference).
+
+To learn more about creating your own extensions, read about the [Extensions API](https://github.com/ebookr/ebookr/wiki/Extensions-API).
+
 Use it in your own code
 -----------------------
 
