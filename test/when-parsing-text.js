@@ -40,5 +40,8 @@ describe('When parsing text', function () {
 		ebookr.addParser('/foo', spy);
 		ebookr.parse('foo </foo> bar');
 		expect(spy.calledOnce).to.be.true;
+		ebookr.addParser('foo', spy);
+		ebookr.parse('foo <foo /> bar <foo />');
+		expect(spy.calledThrice).to.be.true;
 	});
 });

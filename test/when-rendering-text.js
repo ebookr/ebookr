@@ -5,28 +5,25 @@ describe('When rendering text', function () {
 
 	beforeEach(function () {
 		ebookr = require('../lib/ebookr').new();
+		ebookr.addParser('foo', function (one, two) {
+			return [one, two];
+		});
+		ebookr.addParser('/foo', function () {});
 	});
 
 	it('should render tokens', function () {
 		ebookr.addRenderer('foo', function () {
 			return "test";
 		});
-		var renderedText = ebookr.render('foo <foo> bar <foo >baz');
-		expect(renderedText).to.equal('foo test bar testbaz');
-	});
-
-	it('should trigger exception when unknown token found', function () {
-		expect(function () {
-			ebookr.render('foo <foo> bar');
-		}).to.throw(Error);
+		expect(ebookr.parse('foo <foo> bar <foo >baz').render()).to.equal('foo test bar testbaz');
 	});
 
 	it('should parse attributes', function () {
 		ebookr.addRenderer('foo', function (one, two) {
 			return one + two;
 		});
-		expect(ebookr.render('foo <foo two="42" one="1337 test"> bar')).to.equal('foo 1337 test42 bar');
-		expect(ebookr.render('foo <foo two="42"> bar')).to.equal('foo undefined42 bar');
+		expect(ebookr.parse('foo <foo two="42" one="1337 test"> bar').render()).to.equal('foo 1337 test42 bar');
+		expect(ebookr.parse('foo <foo two="42"> bar').render()).to.equal('foo undefined42 bar');
 	});
 
 	it('should parse open tags', function () {
@@ -36,7 +33,13 @@ describe('When rendering text', function () {
 		ebookr.addRenderer('/foo', function () {
 			return '}';
 		})
-		var renderedText = ebookr.render('foo <foo>test</foo> bar');
-		expect(renderedText).to.equal('foo {test} bar');
+		expect(ebookr.parse('foo <foo>test</foo> bar').render()).to.equal('foo {test} bar');
+	});
+
+	it('should parse (fake) tags', function () {
+		ebookr.addRenderer('foo', function () {
+			return 'test';
+		});
+		expect(ebookr.parse('foo <foo /> bar').render()).to.equal('foo test bar');
 	});
 });
