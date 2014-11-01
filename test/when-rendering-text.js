@@ -46,4 +46,12 @@ describe('When rendering text', function () {
 		});
 		expect(ebookr.parse('foo <foo /> bar').render()).to.equal('foo test bar');
 	});
+
+	it('should parse similar-named tags', function () {
+		ebookr.addRenderers({
+			'foo': function () { return 'foo'; },
+			'subfoo': function () { return 'subfoo'; }
+		});
+		expect(ebookr.parse('<foo /> <subfoo />').render()).to.equal('foo subfoo');
+	});
 });
