@@ -3,6 +3,7 @@ var expect = require('chai').expect,
 
 describe('When parsing text', function () {
 	var ebookr;
+	var noop = function () {};
 
 	beforeEach(function () {
 		ebookr = require('../lib/ebookr').new();
@@ -43,5 +44,27 @@ describe('When parsing text', function () {
 		ebookr.addParser('foo', spy);
 		ebookr.parse('foo <foo /> bar <foo />');
 		expect(spy.calledThrice).to.be.true;
+	});
+
+	it('should parse open tags', function () {
+		var parsedText;
+		ebookr.addParsers({
+			'foo': function (text) {
+				parsedText = text;
+			},
+			'/foo': function () {}
+		});
+		ebookr.parse('<foo>test</foo>');
+		expect(parsedText).to.equal('test');
+	});
+
+	it('should notify unbalanced tags', function () {
+		ebookr.addParsers({
+			'foo': noop,
+			'/foo': noop
+		});
+		expect(function () {
+			ebookr.parse('<foo><foo></foo>');
+		}).to.throw(/Unbalanced tags found/);
 	});
 });
