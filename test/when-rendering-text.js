@@ -56,6 +56,15 @@ describe('When rendering text', function () {
 		expect(ebookr.parse('<foo /> <subfoo />').render()).to.equal('foo subfoo');
 	});
 
+	it('should be able to parse text on separate occasions', function () {
+		ebookr.addRenderers({
+			'foo': function () { return 'foo'; },
+			'subfoo': function () { return 'subfoo'; }
+		});
+		ebookr.parse('<foo>');
+		expect(ebookr.parse('<subfoo>').render()).to.equal('subfoo');
+	});
+
 	it('should call renderer for each token', function () {
 		var renderer = sinon.spy();
 		ebookr.addRenderer('foo', renderer);
