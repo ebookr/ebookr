@@ -1,4 +1,5 @@
-var expect = require('chai').expect;
+var expect = require('chai').expect,
+		sinon = require('sinon');
 
 describe('When rendering text', function () {
 	var ebookr;
@@ -53,5 +54,12 @@ describe('When rendering text', function () {
 			'subfoo': function () { return 'subfoo'; }
 		});
 		expect(ebookr.parse('<foo /> <subfoo />').render()).to.equal('foo subfoo');
+	});
+
+	it('should call renderer for each token', function () {
+		var renderer = sinon.spy();
+		ebookr.addRenderer('foo', renderer);
+		ebookr.parse('<foo /> <foo /> <foo />').render();
+		expect(renderer.calledThrice).to.be.true;
 	});
 });
