@@ -9,7 +9,9 @@ describe('When configuring ebookr', function () {
 
 	it('should have default configurations', function () {
 		expect(ebookr.options).to.eql({
-			documentclass: 'book'
+			documentclass: 'book',
+			encoding: 'utf-8',
+			format: 'html'
 		});
 	});
 
