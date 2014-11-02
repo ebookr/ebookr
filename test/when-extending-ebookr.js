@@ -15,7 +15,8 @@ describe('When extending ebookr', function () {
 			'extend': require('extend'),
 			'util': require('util'),
 			'shelljs': require('shelljs'),
-			'fs': require('fs')
+			'fs': require('fs'),
+			'randomstring': require('randomstring')
 		});
 	});
 

@@ -25,7 +25,12 @@ describe('When converting file to html', function () {
 			'util': require('util'),
 			'./token': require('../lib/token'),
 			'shelljs': shell,
-			'fs': fs
+			'fs': fs,
+			'randomstring': {
+				generate: function () {
+					return 'tmp';
+				}
+			}
 		}).new();
 	});
 
