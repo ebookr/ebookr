@@ -14,7 +14,7 @@ Setup
 1. Install Pandoc
 2. Choose how to utilize ebookr
     * In your own code: ´npm install ebookr´
-    * ~~From commandline: [grunt-cli](https://github.com/ebookr/ebookr-cli)~~ (not available yet)
+    * ~~From commandline: [ebookr-cli](https://github.com/ebookr/ebookr-cli)~~ (not available yet)
     * ~~Using [Grunt](http://gruntjs.com/): [grunt-ebookr](https://github.com/ebookr/grunt-ebookr)~~ (not available yet)
 3. Extend it with [extensions](https://github.com/ebookr/ebookr/wiki/Available_extensions)
 4. Start using it!
