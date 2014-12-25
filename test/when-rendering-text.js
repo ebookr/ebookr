@@ -10,7 +10,7 @@ describe('When rendering text', function () {
 		warnSpy = sinon.spy();
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'./parser': mockrequire('../lib/parser', {
+			'./ebookr/parser': mockrequire('../lib/ebookr/parser', {
 				'util': require('util'),
 				'./util': { warn: warnSpy }
 			})

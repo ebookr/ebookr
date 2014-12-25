@@ -27,13 +27,12 @@ describe('When converting file to html', function () {
 		};
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'./converter': mockrequire('../lib/converter', {
+			'./ebookr/converter': mockrequire('../lib/ebookr/converter', {
 				'shelljs': shell,
 				'fs': fs,
 				'randomstring': randomstring,
 				'util': require('util')
-			}),
-			'./token': require('../lib/token')
+			})
 		}).new();
 	});
 

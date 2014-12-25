@@ -14,10 +14,10 @@ describe('When using the CLI', function () {
 		var packageVersion = require('../package').version;
 		var ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'./cli': {
+			'./ebookr/cli': {
 				'version': true
 			},
-			'./util': {
+			'./ebookr/util': {
 				log: logSpy
 			}
 		}).cli();

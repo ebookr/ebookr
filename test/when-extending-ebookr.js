@@ -16,7 +16,7 @@ describe('When extending ebookr', function () {
 			'shelljs': require('shelljs'),
 			'fs': require('fs'),
 			'randomstring': require('randomstring'),
-			'./extensions': mockrequire('../lib/extensions', {
+			'./ebookr/extensions': mockrequire('../lib/ebookr/extensions', {
 				'ebookr-test': spy,
 				'util': require('util')
 			})
