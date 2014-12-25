@@ -29,3 +29,5 @@ node_modules
 
 # A test file used to verify Pandoc behavior
 test.js
+# The outputted file that file.js produces - for test purposes
+test.pdf

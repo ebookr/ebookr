@@ -3,24 +3,42 @@ var expect = require('chai').expect,
 		sinon = require('sinon');
 
 describe('When using the CLI', function () {
-	var ebookr;
+	var converter;
 	var logSpy;
 
-	beforeEach(function () {
+	var mockEbookr = function (cli) {
 		logSpy = sinon.spy();
-	});
-
-	it('should be able to log version version', function () {
-		ebookr = mockrequire('../lib/ebookr', {
+		converter = { convert: sinon.spy() };
+		mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'./ebookr/cli': {
-				'version': true
-			},
-			'./ebookr/util': {
+			'./ebookr/cli': cli,
+			'./ebookr/converter': converter,
+			'./util/console': {
 				log: logSpy
 			}
 		}).cli();
+	};
+
+	it('should be able to log version', function () {
+		mockEbookr({ version: true });
 		expect(logSpy.calledOnce).to.be.true;
 		expect(logSpy.getCall(0).args[0]).to.match(/ebookr v/);
+	});
+
+	it('should be able to target a specific file', function () {
+		mockEbookr({ files: ['test'] });
+		expect(converter.convert.calledOnce).to.be.true;
+		expect(converter.convert.getCall(0).args).to.eql(['test', null]);
+	});
+
+	it('should be able to name outputed file', function () {
+		mockEbookr({ files: ['test.md'], output: 'test.pdf' });
+		expect(converter.convert.getCall(0).args).to.eql(['test.md', 'test.pdf']);
+	});
+
+	it('should warn if no files given', function () {
+		expect(function () {
+			mockEbookr({ files: [] });
+		}).to.throw(/No file\(s\) given/);
 	});
 });
