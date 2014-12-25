@@ -1,11 +1,20 @@
 var expect = require('chai').expect,
+		mockrequire = require('mockrequire'),
 		sinon = require('sinon');
 
 describe('When rendering text', function () {
 	var ebookr;
+	var warnSpy;
 
 	beforeEach(function () {
-		ebookr = require('../lib/ebookr').new();
+		warnSpy = sinon.spy();
+		ebookr = mockrequire('../lib/ebookr', {
+			'extend': require('extend'),
+			'./parser': mockrequire('../lib/parser', {
+				'util': require('util'),
+				'./util': { warn: warnSpy }
+			})
+		}).new();
 		ebookr.addParser('foo', function (one, two) {
 			return [one, two];
 		});

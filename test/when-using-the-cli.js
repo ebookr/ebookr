@@ -4,9 +4,10 @@ var expect = require('chai').expect,
 
 describe('When using the CLI', function () {
 	var ebookr;
+	var logSpy;
 
 	beforeEach(function () {
-		console.log = sinon.spy();
+		logSpy = sinon.spy();
 	});
 
 	it('should be able to log version version', function () {
@@ -15,9 +16,12 @@ describe('When using the CLI', function () {
 			'extend': require('extend'),
 			'./cli': {
 				'version': true
+			},
+			'./util': {
+				log: logSpy
 			}
 		}).cli();
-		expect(console.log.calledOnce).to.be.true;
-		expect(console.log.getCall(0).args).to.eql(['ebookr v' + packageVersion]);
+		expect(logSpy.calledOnce).to.be.true;
+		expect(logSpy.getCall(0).args).to.eql(['ebookr v' + packageVersion]);
 	});
 });

@@ -1,12 +1,21 @@
 var expect = require('chai').expect,
+		mockrequire = require('mockrequire'),
 		sinon = require('sinon');
 
 describe('When parsing text', function () {
 	var ebookr;
 	var noop = function () {};
+	var warnSpy;
 
 	beforeEach(function () {
-		ebookr = require('../lib/ebookr').new();
+		warnSpy = sinon.spy();
+		ebookr = mockrequire('../lib/ebookr', {
+			'extend': require('extend'),
+			'./parser': mockrequire('../lib/parser', {
+				'util': require('util'),
+				'./util': { warn: warnSpy }
+			})
+		}).new();
 	});
 
 	it('should trigger token when found', function () {
@@ -17,9 +26,8 @@ describe('When parsing text', function () {
 	});
 
 	it('should log warning when unknown token found', function () {
-		sinon.spy(console, 'warn');
 		ebookr.parse('foo <foo> bar');
-		expect(console.warn.calledOnce);
+		expect(warnSpy.calledOnce);
 	});
 
 	it('should parse attributes', function () {
