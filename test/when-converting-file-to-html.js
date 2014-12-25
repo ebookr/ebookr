@@ -20,17 +20,20 @@ describe('When converting file to html', function () {
 		shell = {
 			exec: sinon.spy()
 		};
+		var randomstring = {
+			generate: function () {
+				return 'tmp';
+			}
+		};
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'util': require('util'),
-			'./token': require('../lib/token'),
-			'shelljs': shell,
-			'fs': fs,
-			'randomstring': {
-				generate: function () {
-					return 'tmp';
-				}
-			}
+			'./converter': mockrequire('../lib/converter', {
+				'shelljs': shell,
+				'fs': fs,
+				'randomstring': randomstring,
+				'util': require('util')
+			}),
+			'./token': require('../lib/token')
 		}).new();
 	});
 

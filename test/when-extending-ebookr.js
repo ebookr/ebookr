@@ -11,12 +11,15 @@ describe('When extending ebookr', function () {
 			ebookr.addParser('test', function () {});
 		});
 		bkr = mockrequire('../lib/ebookr', {
-			'ebookr-test': spy,
 			'extend': require('extend'),
 			'util': require('util'),
 			'shelljs': require('shelljs'),
 			'fs': require('fs'),
-			'randomstring': require('randomstring')
+			'randomstring': require('randomstring'),
+			'./extensions': mockrequire('../lib/extensions', {
+				'ebookr-test': spy,
+				'util': require('util')
+			})
 		});
 	});
 
