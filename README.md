@@ -9,7 +9,7 @@ The aim of this project is to create tools that ease and enhance the already pow
 
 ## Setup
 
-1. [Install Pandoc](http://johnmacfarlane.net/pandoc/installing.html) (and also LaTeX if you want to convert to PDF)
+1. [Install Pandoc](http://johnmacfarlane.net/pandoc/installing.html) (remember LaTeX if you want to convert to PDF)
 2. Choose how to utilize ebookr
     * In your own code: ´npm install ebookr´
     * From commandline: [ebookr-cli](https://github.com/ebookr/ebookr-cli)
