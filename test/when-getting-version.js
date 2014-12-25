@@ -1,6 +1,6 @@
 var expect = require('chai').expect,
-		child_process = require('child_process'),
-		util = require('util');
+		mockrequire = require('mockrequire'),
+		sinon = require('sinon');
 
 describe('When getting version', function () {
 	var packageVersion;
@@ -15,11 +15,15 @@ describe('When getting version', function () {
 	});
 
 	describe('With CLI', function () {
-		it('should log version', function (done) {
-			child_process.exec('node ./lib/ebookr.js --version', function (error, stdout, stderr) {
-				expect(stdout).to.equal(util.format('ebookr v%s\n', packageVersion));
-				done();
+		it('should log version', function () {
+			sinon.spy(console, 'log');
+			var ebookr = mockrequire('../lib/ebookr', {
+				'extend': require('extend'),
+				'./cli': {
+					'version': true
+				}
 			});
+			expect(console.log.calledOnce);
 		})
 	});
 });
