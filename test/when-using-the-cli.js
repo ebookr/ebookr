@@ -11,8 +11,7 @@ describe('When using the CLI', function () {
 	});
 
 	it('should be able to log version version', function () {
-		var packageVersion = require('../package').version;
-		var ebookr = mockrequire('../lib/ebookr', {
+		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/cli': {
 				'version': true
@@ -22,6 +21,6 @@ describe('When using the CLI', function () {
 			}
 		}).cli();
 		expect(logSpy.calledOnce).to.be.true;
-		expect(logSpy.getCall(0).args).to.eql(['ebookr v' + packageVersion]);
+		expect(logSpy.getCall(0).args[0]).to.match(/ebookr v/);
 	});
 });
