@@ -9,11 +9,13 @@ The aim of this project is to create tools that ease and enhance the already pow
 
 ## Setup
 
-1. [Install Pandoc](http://johnmacfarlane.net/pandoc/installing.html) (remember LaTeX if you want to convert to PDF)
+1. [Install Pandoc](http://johnmacfarlane.net/pandoc/installing.html)
+    * If you want PDF, remember to install LaTeX
+    * If you want MOBI, install [KindleGen](http://www.amazon.com/gp/feature.html?docId=1000765211)
 2. Choose how to utilize ebookr
     * In your own code: ´npm install ebookr´
     * From commandline: [ebookr-cli](https://github.com/ebookr/ebookr-cli)
-    * ~~Using [Grunt](http://gruntjs.com/): [grunt-ebookr](https://github.com/ebookr/grunt-ebookr)~~ (not available yet)
+    * Using [Grunt](http://gruntjs.com/): [grunt-ebookr](https://github.com/ebookr/grunt-ebookr)
 3. Extend it with [extensions](https://github.com/ebookr/ebookr/wiki/Available_extensions)
 4. Start using it!
 
@@ -24,7 +26,7 @@ The interface of extensions is HTML-inspired, with tags and attributes.
     <closedtag attr="value" />
     <opentag attr1="value" attr2="value">Some text</opentag>
 
-Extensions are added as parsers (runs through text to read metadata) and renderers (converts it into whatever output is required). Although many of these things are already available as extensions to the [markdown parsed by Pandoc](http://johnmacfarlane.net/pandoc/README.html#pandocs-markdown), these extensions aim to deliver more HTML counterparts to popular [LaTeX packages](http://en.wikibooks.org/wiki/LaTeX/Package_Reference).
+Extensions are added as parsers (runs through text to read metadata) and renderers (converts it into whatever output is required). Although many of these things are already available as extensions to the [markdown parsed by Pandoc](http://johnmacfarlane.net/pandoc/README.html#pandocs-markdown), these extensions aim to deliver HTML counterparts to popular [LaTeX packages](http://en.wikibooks.org/wiki/LaTeX/Package_Reference).
 
 To learn more about creating your own extensions, read about the [Extensions API](https://github.com/ebookr/ebookr/wiki/Extensions-API).
 
