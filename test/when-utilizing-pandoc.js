@@ -53,19 +53,11 @@ describe('When utilizing pandoc', function () {
 		});
 
 		it('should execute pandoc to create epub file', function () {
-			expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -o tmp.epub');
+			expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -o test.epub');
 		});
 
 		it('should execute kindlegen', function () {
-			expect(shell.exec).to.have.been.calledWithMatch('kindlegen tmp.epub');
-		});
-
-		it('should move mobi-file', function () {
-			expect(shell.exec).to.have.been.calledWithMatch('mv tmp.mobi test.mobi');
-		});
-
-		it('should remove epub-file', function () {
-			expect(shell.exec).to.have.been.calledWithMatch('rm tmp.epub');
+			expect(shell.exec).to.have.been.calledWithMatch('kindlegen test.epub');
 		});
 	})
 });
