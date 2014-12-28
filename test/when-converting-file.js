@@ -6,7 +6,7 @@ var chai = require('chai'),
 
 chai.use(sinonChai);
 
-describe('When converting file to html', function () {
+describe('When converting file', function () {
 	var ebookr, shell, fs;
 
 	beforeEach(function () {
@@ -31,32 +31,43 @@ describe('When converting file to html', function () {
 				'shelljs': shell,
 				'fs': fs,
 				'randomstring': randomstring,
-				'util': require('util')
+				'util': require('util'),
+				'q': require('q')
 			})
 		}).new();
 	});
 
-	it('should create tmp file with rendered content', function () {
-		ebookr.convert('test.md');
-		expect(fs.readFileSync).to.have.been.calledWith('test.md', 'utf-8');
-		expect(fs.writeFileSync).to.have.been.calledWith('tmp.md', '**test**');
-	});
-
-	it('should delete tmp file afterwards', function () {
-		ebookr.convert('test.md');
-		expect(fs.unlinkSync).to.have.been.calledWith('tmp.md');
-	});
-
 	describe('With no output file given', function () {
+		var promise;
+
+		beforeEach(function () {
+			promise = ebookr.convertFile('test.md');
+		});
+
+		it('should read file', function () {
+			expect(fs.readFileSync).to.have.been.calledWith('test.md', 'utf-8');
+		});
+
+		it('should create tmp file with rendered content', function () {
+			expect(fs.writeFileSync).to.have.been.calledWith('tmp.md', '**test**');
+		});
+
+		it('should return content as a promise if no output is given', function () {
+			expect(promise.then).to.exist;
+		});
+
+		it('should delete tmp file afterwards', function () {
+			expect(fs.unlinkSync).to.have.been.calledWith('tmp.md');
+		});
+
 		it('should execute pandoc', function () {
-			ebookr.convert('test.md');
 			expect(shell.exec).to.have.been.calledWith('pandoc tmp.md -t html5');
 		});
 	});
 
 	describe('With output file given', function () {
 		it('should create file', function () {
-			ebookr.convert('test.md', 'test.html');
+			ebookr.convertFile('test.md', 'test.html');
 			expect(shell.exec).to.have.been.calledWith('pandoc tmp.md -o test.html');
 		});
 	});
