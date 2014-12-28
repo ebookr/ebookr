@@ -13,7 +13,7 @@ The aim of this project is to create tools that ease and enhance the already pow
     * If you want PDF, remember to install LaTeX
     * If you want MOBI, install [KindleGen](http://www.amazon.com/gp/feature.html?docId=1000765211)
 2. Choose how to utilize ebookr
-    * In your own code: ´npm install ebookr´
+    * In your own code: `npm install ebookr`
     * From commandline: [ebookr-cli](https://github.com/ebookr/ebookr-cli)
     * Using [Grunt](http://gruntjs.com/): [grunt-ebookr](https://github.com/ebookr/grunt-ebookr)
 3. Extend it with [extensions](https://github.com/ebookr/ebookr/wiki/Available_extensions)
