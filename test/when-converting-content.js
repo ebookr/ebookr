@@ -7,15 +7,15 @@ var chai = require('chai'),
 chai.use(sinonChai);
 
 describe('When converting content', function () {
-	var shell, fs, promise;
+	var pandoc, fs, promise;
 
 	beforeEach(function () {
 		fs = {
 			unlinkSync: sinon.spy(),
 			writeFileSync: sinon.spy()
 		};
-		shell = {
-			exec: sinon.spy()
+		pandoc = {
+			convert: sinon.spy(function () { return 42; })
 		};
 		var randomstring = {
 			generate: function () {
@@ -25,11 +25,11 @@ describe('When converting content', function () {
 		promise = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/converter': mockrequire('../lib/ebookr/converter', {
-				'shelljs': shell,
 				'fs': fs,
 				'randomstring': randomstring,
 				'util': require('util'),
-				'q': require('q')
+				'q': require('q'),
+				'./pandoc': pandoc
 			})
 		}).new().convert('# test');
 	});
@@ -39,7 +39,7 @@ describe('When converting content', function () {
 	});
 
 	it('should return content as a promise', function () {
-		expect(promise.then).to.exist;
+		expect(promise).to.equal(42);
 	});
 
 	it('should delete tmp file afterwards', function () {
@@ -47,6 +47,6 @@ describe('When converting content', function () {
 	});
 
 	it('should execute pandoc', function () {
-		expect(shell.exec).to.have.been.calledWith('pandoc tmp.md -t html5');
+		expect(pandoc.convert).to.have.been.calledWith('tmp.md', { to: 'html5' });
 	});
 });

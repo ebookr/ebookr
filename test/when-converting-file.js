@@ -7,7 +7,7 @@ var chai = require('chai'),
 chai.use(sinonChai);
 
 describe('When converting file', function () {
-	var ebookr, shell, fs;
+	var ebookr, pandoc, fs;
 
 	beforeEach(function () {
 		fs = {
@@ -17,8 +17,8 @@ describe('When converting file', function () {
 			unlinkSync: sinon.spy(),
 			writeFileSync: sinon.spy()
 		};
-		shell = {
-			exec: sinon.spy()
+		pandoc = {
+			convert: sinon.spy(function () { return 42; })
 		};
 		var randomstring = {
 			generate: function () {
@@ -28,11 +28,11 @@ describe('When converting file', function () {
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/converter': mockrequire('../lib/ebookr/converter', {
-				'shelljs': shell,
 				'fs': fs,
 				'randomstring': randomstring,
 				'util': require('util'),
-				'q': require('q')
+				'q': require('q'),
+				'./pandoc': pandoc
 			})
 		}).new();
 	});
@@ -53,7 +53,7 @@ describe('When converting file', function () {
 		});
 
 		it('should return content as a promise if no output is given', function () {
-			expect(promise.then).to.exist;
+			expect(promise).to.equal(42);
 		});
 
 		it('should delete tmp file afterwards', function () {
@@ -61,14 +61,14 @@ describe('When converting file', function () {
 		});
 
 		it('should execute pandoc', function () {
-			expect(shell.exec).to.have.been.calledWith('pandoc tmp.md -t html5');
+			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { to: 'html5' });
 		});
 	});
 
 	describe('With output file given', function () {
 		it('should create file', function () {
 			ebookr.convertFile('test.md', 'test.html');
-			expect(shell.exec).to.have.been.calledWith('pandoc tmp.md -o test.html');
+			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { output: 'test.html' });
 		});
 	});
 });
