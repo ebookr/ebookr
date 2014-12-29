@@ -26,14 +26,16 @@ describe('When using the CLI', function () {
 	});
 
 	it('should be able to target a specific file', function () {
-		mockEbookr({ files: ['test'] });
+		var args = { files: ['test'] };
+		mockEbookr(args);
 		expect(converter.convertFile.calledOnce).to.be.true;
-		expect(converter.convertFile.getCall(0).args).to.eql([['test'], null]);
+		expect(converter.convertFile.getCall(0).args).to.eql([['test'], args]);
 	});
 
 	it('should be able to name outputed file', function () {
-		mockEbookr({ files: ['test.md'], output: 'test.pdf' });
-		expect(converter.convertFile.getCall(0).args).to.eql([['test.md'], 'test.pdf']);
+		var args = { files: ['test.md'], output: 'test.pdf' };
+		mockEbookr(args);
+		expect(converter.convertFile.getCall(0).args).to.eql([['test.md'], args]);
 	});
 
 	it('should warn if no files given', function () {
