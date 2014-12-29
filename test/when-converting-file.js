@@ -43,7 +43,7 @@ describe('When converting file', function () {
 		var promise;
 
 		beforeEach(function () {
-			promise = ebookr.convertFile('test.md');
+			promise = ebookr.convertFile(['test.md']);
 		});
 
 		it('should read file', function () {
@@ -71,9 +71,17 @@ describe('When converting file', function () {
 		});
 	});
 
+	describe('With multiple files given', function () {
+		it('should read all files', function () {
+			ebookr.convertFile(['test.md', 'test2.md']);
+			expect(fs.readFileSync).to.have.been.calledWith('test.md', 'utf-8');
+			expect(fs.readFileSync).to.have.been.calledWith('test2.md', 'utf-8');
+		});
+	});
+
 	describe('With output file given', function () {
 		it('should create file', function () {
-			ebookr.convertFile('test.md', 'test.html');
+			ebookr.convertFile(['test.md'], 'test.html');
 			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { output: 'test.html' });
 		});
 	});
