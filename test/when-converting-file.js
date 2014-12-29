@@ -2,12 +2,13 @@ var chai = require('chai'),
 		sinonChai = require('sinon-chai'),
 		expect = chai.expect,
 		mockrequire = require('mockrequire'),
-		sinon = require('sinon');
+		sinon = require('sinon'),
+		q = require('q');
 
 chai.use(sinonChai);
 
 describe('When converting file', function () {
-	var ebookr, pandoc, fs;
+	var ebookr, pandoc, fs, deferConverted;
 
 	beforeEach(function () {
 		fs = {
@@ -17,8 +18,9 @@ describe('When converting file', function () {
 			unlinkSync: sinon.spy(),
 			writeFileSync: sinon.spy()
 		};
+		deferConverted = q.defer();
 		pandoc = {
-			convert: sinon.spy(function () { return 42; })
+			convert: sinon.spy(function () { return deferConverted.promise; })
 		};
 		var randomstring = {
 			generate: function () {
@@ -52,12 +54,16 @@ describe('When converting file', function () {
 			expect(fs.writeFileSync).to.have.been.calledWith('tmp.md', '**test**');
 		});
 
-		it('should return content as a promise if no output is given', function () {
-			expect(promise).to.equal(42);
+		it('should return content as a promise', function () {
+			expect(promise.then).to.exist;
 		});
 
-		it('should delete tmp file afterwards', function () {
-			expect(fs.unlinkSync).to.have.been.calledWith('tmp.md');
+		it('should delete tmp file afterwards', function (done) {
+			deferConverted.resolve('test');
+			deferConverted.promise.then(function () {
+				expect(fs.unlinkSync).to.have.been.calledWith('tmp.md');
+				done();
+			})
 		});
 
 		it('should execute pandoc', function () {

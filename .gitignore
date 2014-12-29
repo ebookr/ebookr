@@ -31,3 +31,6 @@ node_modules
 test.js
 # The outputted file that file.js produces - for test purposes
 test.pdf
+test.epub
+test.mobi
+test.html

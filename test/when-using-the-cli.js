@@ -8,7 +8,7 @@ describe('When using the CLI', function () {
 
 	var mockEbookr = function (cli) {
 		logSpy = sinon.spy();
-		converter = { convert: sinon.spy() };
+		converter = { convertFile: sinon.spy() };
 		mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/cli': cli,
@@ -27,13 +27,13 @@ describe('When using the CLI', function () {
 
 	it('should be able to target a specific file', function () {
 		mockEbookr({ files: ['test'] });
-		expect(converter.convert.calledOnce).to.be.true;
-		expect(converter.convert.getCall(0).args).to.eql(['test', null]);
+		expect(converter.convertFile.calledOnce).to.be.true;
+		expect(converter.convertFile.getCall(0).args).to.eql(['test', null]);
 	});
 
 	it('should be able to name outputed file', function () {
 		mockEbookr({ files: ['test.md'], output: 'test.pdf' });
-		expect(converter.convert.getCall(0).args).to.eql(['test.md', 'test.pdf']);
+		expect(converter.convertFile.getCall(0).args).to.eql(['test.md', 'test.pdf']);
 	});
 
 	it('should warn if no files given', function () {
