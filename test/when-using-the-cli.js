@@ -1,6 +1,10 @@
-var expect = require('chai').expect,
+var chai = require('chai'),
+		expect = chai.expect,
+		sinonChai = require('sinon-chai'),
 		mockrequire = require('mockrequire'),
 		sinon = require('sinon');
+
+chai.use(sinonChai);
 
 describe('When using the CLI', function () {
 	var converter;
@@ -22,20 +26,13 @@ describe('When using the CLI', function () {
 	it('should be able to log version', function () {
 		mockEbookr({ version: true });
 		expect(logSpy.calledOnce).to.be.true;
-		expect(logSpy.getCall(0).args[0]).to.match(/ebookr v/);
+		expect(logSpy).to.have.been.calledWithMatch(/ebookr v/);
 	});
 
-	it('should be able to target a specific file', function () {
+	it('should be pass on args', function () {
 		var args = { files: ['test'] };
 		mockEbookr(args);
-		expect(converter.convertFile.calledOnce).to.be.true;
-		expect(converter.convertFile.getCall(0).args).to.eql([['test'], args]);
-	});
-
-	it('should be able to name outputed file', function () {
-		var args = { files: ['test.md'], output: 'test.pdf' };
-		mockEbookr(args);
-		expect(converter.convertFile.getCall(0).args).to.eql([['test.md'], args]);
+		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
 	});
 
 	it('should warn if no files given', function () {
