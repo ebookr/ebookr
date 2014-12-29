@@ -2,15 +2,19 @@ var chai = require('chai'),
 		sinonChai = require('sinon-chai'),
 		expect = chai.expect,
 		mockrequire = require('mockrequire'),
-		sinon = require('sinon');
+		sinon = require('sinon'),
+		q = require('q');
 
 chai.use(sinonChai);
 
 describe('When utilizing pandoc', function () {
-	var ebookr, shell;
+	var ebookr, shell, deferredExecPromise;
 
 	beforeEach(function () {
-		shell = { exec: sinon.spy() };
+		deferredExecPromise = q.defer();
+		shell = { exec: sinon.spy(function (cmd, cbFn) {
+			cbFn();
+		}) };
 		var randomstring = {
 			generate: function () {
 				return 'tmp';
@@ -27,9 +31,14 @@ describe('When utilizing pandoc', function () {
 		}).new();
 	});
 
-	it('supports only srcFile', function () {
+	it('supports first argument as string', function () {
 		ebookr.pandoc.convert('test.md');
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md');
+	});
+
+	it('supports first argument as array', function () {
+		ebookr.pandoc.convert(['1.md', '2.md']);
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc 1.md 2.md');
 	});
 
 	it('returns a promise', function () {
@@ -47,6 +56,11 @@ describe('When utilizing pandoc', function () {
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -t html5');
 	});
 
+	it('should support option "metadata"', function () {
+		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml');
+	});
+
 	describe('When converting to MOBI', function () {
 		beforeEach(function () {
 			ebookr.pandoc.convert('test.md', { output: 'test.mobi' });
@@ -56,8 +70,12 @@ describe('When utilizing pandoc', function () {
 			expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -o test.epub');
 		});
 
-		it('should execute kindlegen', function () {
-			expect(shell.exec).to.have.been.calledWithMatch('kindlegen test.epub');
+		it('should execute kindlegen', function (done) {
+			deferredExecPromise.resolve('test');
+			deferredExecPromise.promise.then(function () {
+				expect(shell.exec).to.have.been.calledWithMatch('kindlegen test.epub');
+				done();
+			});
 		});
 	})
 });

@@ -81,7 +81,7 @@ describe('When converting file', function () {
 
 	describe('With output file given', function () {
 		it('should create file', function () {
-			ebookr.convertFile(['test.md'], 'test.html');
+			ebookr.convertFile(['test.md'], { output: 'test.html' });
 			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { output: 'test.html' });
 		});
 	});
