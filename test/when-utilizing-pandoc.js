@@ -58,7 +58,7 @@ describe('When utilizing pandoc', function () {
 
 	it('should support option "metadata"', function () {
 		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md');
 	});
 
 	describe('When converting to MOBI', function () {
