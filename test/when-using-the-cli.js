@@ -13,31 +13,40 @@ describe('When using the CLI', function () {
 	var mockEbookr = function (cli) {
 		logSpy = sinon.spy();
 		converter = { convertFile: sinon.spy() };
-		mockrequire('../lib/ebookr', {
+		return mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/cli': cli,
 			'./ebookr/converter': converter,
+			'./ebookr/metadata': require('../lib/ebookr/metadata'),
 			'./util/console': {
 				log: logSpy
 			}
-		}).cli();
+		});
 	};
 
 	it('should be able to log version', function () {
-		mockEbookr({ version: true });
+		mockEbookr({ version: true }).cli();
 		expect(logSpy.calledOnce).to.be.true;
 		expect(logSpy).to.have.been.calledWithMatch(/ebookr v/);
 	});
 
 	it('should be pass on args', function () {
 		var args = { files: ['test'] };
-		mockEbookr(args);
+		mockEbookr(args).cli();
 		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
 	});
 
 	it('should warn if no files given', function () {
 		expect(function () {
-			mockEbookr({ files: [] });
+			mockEbookr({ files: [] }).cli();
 		}).to.throw(/No file\(s\) given/);
+	});
+
+	it('should be able to pass metadata', function () {
+		var args = { files: ['test'], metadata: ['foo=42', 'bar'] };
+		var ebookr = mockEbookr(args);
+		ebookr.cli();
+		expect(ebookr.metadata('foo')).to.equal('42');
+		expect(ebookr.metadata('bar')).to.be.true;
 	});
 });
