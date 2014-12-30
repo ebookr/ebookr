@@ -8,10 +8,15 @@ var chai = require('chai'),
 chai.use(sinonChai);
 
 describe('When utilizing pandoc', function () {
-	var ebookr, shell, deferredExecPromise;
+	var ebookr, fs, shell, deferredExecPromise;
 
 	beforeEach(function () {
 		deferredExecPromise = q.defer();
+		fs = {
+			readFileSync: sinon.spy(function() {
+				return "---\ntitle: TEST\nbar: old"
+			})
+		};
 		shell = { exec: sinon.spy(function (cmd, cbFn) {
 			cbFn();
 		}) };
@@ -23,11 +28,23 @@ describe('When utilizing pandoc', function () {
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/pandoc': mockrequire('../lib/ebookr/pandoc', {
+				'fs': fs,
+				'js-yaml': require('js-yaml'),
 				'randomstring': randomstring,
 				'shelljs': shell,
 				'util': require('util'),
-				'q': require('q')
-			})
+				'q': require('q'),
+				'../ebookr': {
+					metadata: function () {
+						return {
+							title: 'TEST',
+							foo: '42',
+							bar: 'new'
+						};
+					}
+				}
+			}),
+			'./ebookr/metadata': require('../lib/ebookr/metadata')
 		}).new();
 	});
 
@@ -59,6 +76,12 @@ describe('When utilizing pandoc', function () {
 	it('should support option "metadata"', function () {
 		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md');
+	});
+
+	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
+		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
+		expect(fs.readFileSync).to.have.been.calledWith('metadata.yaml', 'utf-8');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md -m foo=42 -m bar=new');
 	});
 
 	describe('When converting to MOBI', function () {

@@ -1,6 +1,6 @@
 {
   "name": "ebookr",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "repository": {
     "type": "git",
     "url": "https://github.com/ebookr/ebookr"
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "extend": "^2.0.0",
+    "js-yaml": "^3.2.5",
     "nopt": "^3.0.1",
     "q": "^1.1.2",
     "randomstring": "^1.0.3",

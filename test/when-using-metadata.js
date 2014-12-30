@@ -7,6 +7,11 @@ describe('When using metadata', function () {
 		ebookr = require('../lib/ebookr').new();
 	});
 
+	it('should return all metadata if no parameters are given', function () {
+		ebookr.metadata('test', 1337);
+		expect(ebookr.metadata()).to.eql({ test: 1337 });	
+	})
+
 	it('should be able to get and set metadata', function () {
 		ebookr.metadata('test', 1337);
 		ebookr.metadata('test', 42);
