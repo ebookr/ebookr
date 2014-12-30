@@ -48,6 +48,6 @@ describe('When using the CLI', function () {
 		ebookr.cli();
 		expect(ebookr.metadata('foo')).to.equal('42');
 		expect(ebookr.metadata('bar')).to.be.true;
-		expect(converter.convertFile).to.have.been.calledWith(['test'], { files: ['test'] });
+		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
 	});
 });

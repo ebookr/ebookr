@@ -27,66 +27,62 @@ describe('When utilizing pandoc', function () {
 		};
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
+			'./metadata': require('../lib/ebookr/metadata'),
 			'./ebookr/pandoc': mockrequire('../lib/ebookr/pandoc', {
 				'fs': fs,
 				'js-yaml': require('js-yaml'),
 				'randomstring': randomstring,
 				'shelljs': shell,
 				'util': require('util'),
-				'q': require('q'),
-				'../ebookr': {
-					metadata: function () {
-						return {
-							title: 'TEST',
-							foo: '42',
-							bar: 'new'
-						};
-					}
-				}
-			}),
-			'./ebookr/metadata': require('../lib/ebookr/metadata')
+				'q': require('q')
+			})
 		}).new();
 	});
 
 	it('supports first argument as string', function () {
-		ebookr.pandoc.convert('test.md');
+		ebookr.pandoc('test.md');
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md');
 	});
 
 	it('supports first argument as array', function () {
-		ebookr.pandoc.convert(['1.md', '2.md']);
+		ebookr.pandoc(['1.md', '2.md']);
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc 1.md 2.md');
 	});
 
 	it('returns a promise', function () {
-		var promise = ebookr.pandoc.convert('test.md');
+		var promise = ebookr.pandoc('test.md');
 		expect(promise.then).to.exist;
 	});
 
 	it('should support option "output"', function () {
-		ebookr.pandoc.convert('test.md', { output: 'test.html' });
+		ebookr.pandoc('test.md', { output: 'test.html' });
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -o test.html');
 	});
 
 	it('should support option "to"', function () {
-		ebookr.pandoc.convert('test.md', { to: 'html5' });
+		ebookr.pandoc('test.md', { to: 'html5' });
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -t html5');
 	});
 
 	it('should support option "metadata"', function () {
-		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md');
+		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml');
 	});
 
 	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
-		ebookr.pandoc.convert('test.md', { metadata: 'metadata.yaml' });
+		ebookr.metadata({
+			title: 'TEST',
+			foo: '42',
+			bar: 'new'
+		});
+		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
 		expect(fs.readFileSync).to.have.been.calledWith('metadata.yaml', 'utf-8');
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md -m foo=42 -m bar=new');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml -M foo=42 -M bar=new');
 	});
 
 	describe('When converting to MOBI', function () {
 		beforeEach(function () {
-			ebookr.pandoc.convert('test.md', { output: 'test.mobi' });
+			ebookr.pandoc('test.md', { output: 'test.mobi' });
 		});
 
 		it('should execute pandoc to create epub file', function () {
