@@ -66,7 +66,7 @@ describe('When utilizing pandoc', function () {
 
 	it('should support option "metadata"', function () {
 		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md');
 	});
 
 	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
@@ -77,7 +77,7 @@ describe('When utilizing pandoc', function () {
 		});
 		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
 		expect(fs.readFileSync).to.have.been.calledWith('metadata.yaml', 'utf-8');
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml -M foo=42 -M bar=new');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml test.md -M foo=42 -M bar=new');
 	});
 
 	describe('When converting to MOBI', function () {
