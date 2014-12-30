@@ -15,7 +15,9 @@ describe('When utilizing pandoc', function () {
 		fs = {
 			readFileSync: sinon.spy(function() {
 				return "---\ntitle: TEST\nbar: old"
-			})
+			}),
+			unlinkSync: sinon.spy(),
+			writeFileSync: sinon.spy()
 		};
 		shell = { exec: sinon.spy(function (cmd, cbFn) {
 			cbFn();
@@ -64,9 +66,22 @@ describe('When utilizing pandoc', function () {
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -t html5');
 	});
 
-	it('should support option "metadata"', function () {
-		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml');
+	describe('When using metadataFile', function () {
+		beforeEach(function () {
+			ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
+		});
+
+		it('creates temporary metadataend', function () {
+			expect(fs.writeFileSync).to.have.been.calledWith('metadataend', '---');
+		});
+
+		it('inserts metadata-files into pandoc-cmd', function () {
+			expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml metadataend test.md');
+		});
+
+		it('deletes temporary metadataend when successful', function () {
+			expect(fs.unlinkSync).to.have.been.calledWith('metadataend');
+		});
 	});
 
 	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
@@ -77,7 +92,7 @@ describe('When utilizing pandoc', function () {
 		});
 		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
 		expect(fs.readFileSync).to.have.been.calledWith('metadata.yaml', 'utf-8');
-		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md metadata.yaml -M foo=42 -M bar=new');
+		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml metadataend test.md -M foo=42 -M bar=new');
 	});
 
 	describe('When converting to MOBI', function () {
