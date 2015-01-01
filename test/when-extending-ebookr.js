@@ -16,24 +16,23 @@ describe('When extending ebookr', function () {
 		bkr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/extensions': mockrequire('../lib/ebookr/extensions', {
-				'ebookr-test': extension,
-				'util': require('util')
+				'ebookr-test': extension
 			})
 		});
 	});
 
 	it('can load modules with string', function () {
-		bkr.loadExtensions('ebookr-test');
+		bkr.loadExtension('test');
 		expect(extension).to.have.been.calledWith(bkr);
 	});
 
 	it('can load modules from an array', function () {
-		bkr.loadExtensions(['ebookr-test']);
+		bkr.loadExtensions(['test']);
 		expect(extension).to.have.been.calledWith(bkr);
 	});
 
 	it('should add tokens', function () {
-		bkr.loadExtensions(['ebookr-test']);
+		bkr.loadExtensions(['test']);
 		expect(bkr.tokens.test).to.exist;
 	});
 });

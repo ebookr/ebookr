@@ -7,29 +7,27 @@ var chai = require('chai'),
 chai.use(sinonChai);
 
 describe('When using the CLI', function () {
-	var converter;
-	var logSpy;
+	var mockedConsole, converter, extensions;
 
 	var mockEbookr = function (cli) {
-		logSpy = sinon.spy();
+		mockedConsole = { log: sinon.spy() };
 		converter = { convertFile: sinon.spy() };
+		extensions = { extend: sinon.spy() };
 		metadata = require('../lib/ebookr/metadata');
 		metadata.loadYAML = sinon.spy();
 		return mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/cli': cli,
 			'./ebookr/converter': converter,
+			'./ebookr/extensions': extensions,
 			'./ebookr/metadata': metadata,
-			'./util/console': {
-				log: logSpy
-			}
+			'./util/console': mockedConsole
 		});
 	};
 
 	it('should be able to log version', function () {
 		mockEbookr({ version: true }).cli();
-		expect(logSpy.calledOnce).to.be.true;
-		expect(logSpy).to.have.been.calledWithMatch(/ebookr v/);
+		expect(mockedConsole.log).to.have.been.calledWithMatch(/ebookr v/);
 	});
 
 	it('should be pass on args', function () {
@@ -56,5 +54,10 @@ describe('When using the CLI', function () {
 	it('should pass metadata as file', function () {
 		mockEbookr({files: ['test'], metadataFile: 'test.yaml'}).cli();
 		expect(metadata.loadYAML).to.have.been.calledWith('test.yaml');
+	});
+
+	it('should support adding extensions', function () {
+		mockEbookr({files: ['test'], 'extensions': ['test']}).cli();
+		expect(extensions.extend).to.have.been.calledWith('ebookr-test');
 	});
 });
