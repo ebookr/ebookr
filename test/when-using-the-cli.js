@@ -13,11 +13,13 @@ describe('When using the CLI', function () {
 	var mockEbookr = function (cli) {
 		logSpy = sinon.spy();
 		converter = { convertFile: sinon.spy() };
+		metadata = require('../lib/ebookr/metadata');
+		metadata.loadYAML = sinon.spy();
 		return mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
 			'./ebookr/cli': cli,
 			'./ebookr/converter': converter,
-			'./ebookr/metadata': require('../lib/ebookr/metadata'),
+			'./ebookr/metadata': metadata,
 			'./util/console': {
 				log: logSpy
 			}
@@ -49,5 +51,10 @@ describe('When using the CLI', function () {
 		expect(ebookr.metadata('foo')).to.equal('42');
 		expect(ebookr.metadata('bar')).to.be.true;
 		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
+	});
+
+	it('should pass metadata as file', function () {
+		mockEbookr({files: ['test'], metadataFile: 'test.yaml'}).cli();
+		expect(metadata.loadYAML).to.have.been.calledWith('test.yaml');
 	});
 });
