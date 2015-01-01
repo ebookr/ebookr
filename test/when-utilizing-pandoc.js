@@ -24,23 +24,16 @@ describe('When utilizing pandoc', function () {
 				return 'tmp';
 			}
 		};
-		var metadata = require('../lib/ebookr/metadata');
-		metadata.getChanged = function () {
-			return {
-				foo: '42',
-				bar: 'new'
-			};
-		};
 		ebookr = mockrequire('../lib/ebookr', {
 			'extend': require('extend'),
-			'./metadata': metadata,
 			'./ebookr/pandoc': mockrequire('../lib/ebookr/pandoc', {
 				'fs': fs,
 				'randomstring': randomstring,
 				'shelljs': shell,
 				'util': require('util'),
 				'q': require('q')
-			})
+			}),
+			'./ebookr/metadata': require('../lib/ebookr/metadata')
 		}).new();
 	});
 
@@ -88,6 +81,7 @@ describe('When utilizing pandoc', function () {
 	});
 
 	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
+		ebookr.metadata.extend({ foo: 42, bar: 'new'});
 		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml metadataend test.md -M foo=42 -M bar=new');
 	});

@@ -48,8 +48,8 @@ describe('When using the CLI', function () {
 		var args = { files: ['test'], metadata: ['foo=42', 'bar'] };
 		var ebookr = mockEbookr(args);
 		ebookr.cli();
-		expect(ebookr.metadata('foo')).to.equal('42');
-		expect(ebookr.metadata('bar')).to.be.true;
+		expect(ebookr.metadata.get('foo')).to.equal('42');
+		expect(ebookr.metadata.get('bar')).to.be.true;
 		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
 	});
 
