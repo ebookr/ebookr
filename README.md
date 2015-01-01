@@ -32,4 +32,4 @@ To learn more about creating your own extensions, read about the [Extensions API
 
 ## Use it in your own code
 
-Explanation to come! (Check out [the roadmap](https://github.com/ebookr/ebookr/wiki/Roadmap) in the meantime.)
+Explanation to come...
