@@ -57,7 +57,7 @@ describe('When using the CLI', function () {
 	});
 
 	it('should support adding extensions', function () {
-		mockEbookr({files: ['test'], 'extensions': ['test']}).cli();
+		mockEbookr({files: ['test'], 'extension': ['test']}).cli();
 		expect(extensions.extend).to.have.been.calledWith('ebookr-test');
 	});
 });
