@@ -70,7 +70,7 @@ describe('When converting content', function () {
 	describe('With options', function () {
 		it('should pass on metadata', function () {
 			ebookr = mockEbookr();
-			ebookr.convert('# test', { metadata: ['foo=42', 'bar'] });
+			ebookr.convert('# test', { metadata: {foo: '42', bar: true} });
 			expect(ebookr.metadata.get('foo')).to.equal('42');
 			expect(ebookr.metadata.get('bar')).to.be.true;
 		});

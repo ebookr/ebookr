@@ -45,4 +45,17 @@ describe('When using the CLI', function () {
 			mockEbookr({ argv: { remain: [] }}).cli();
 		}).to.throw(/No file\(s\) given/);
 	});
+
+	it('should parse metadata', function () {
+		mockEbookr({ argv: { remain: ['test'] }, metadata: ['foo=42', 'bar'] }).cli();
+		expect(converter.convertFile).to.have.been.calledWith(['test'], {
+			argv: {
+				remain: ['test']
+			},
+			metadata: {
+				foo: '42',
+				bar: true
+			}
+		});
+	});
 });
