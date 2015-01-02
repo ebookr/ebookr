@@ -45,23 +45,4 @@ describe('When using the CLI', function () {
 			mockEbookr({ argv: { remain: [] }}).cli();
 		}).to.throw(/No file\(s\) given/);
 	});
-
-	it('should be able to pass metadata', function () {
-		var args = { argv: { remain: ['test'] }, metadata: ['foo=42', 'bar'] };
-		var ebookr = mockEbookr(args);
-		ebookr.cli();
-		expect(ebookr.metadata.get('foo')).to.equal('42');
-		expect(ebookr.metadata.get('bar')).to.be.true;
-		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
-	});
-
-	it('should pass metadata as file', function () {
-		mockEbookr({ argv: { remain: ['test'] }, metadataFile: 'test.yaml'}).cli();
-		expect(metadata.loadYAML).to.have.been.calledWith('test.yaml');
-	});
-
-	it('should support adding extensions', function () {
-		mockEbookr({ argv: { remain: ['test'] }, 'extension': ['test']}).cli();
-		expect(extensions.extend).to.have.been.calledWith('ebookr-test');
-	});
 });
