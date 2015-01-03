@@ -1,6 +1,10 @@
-var expect = require('chai').expect,
+var chai = require('chai'),
+		expect = chai.expect,
+		sinonChai = require('sinon-chai'),
 		mockrequire = require('mockrequire'),
 		sinon = require('sinon');
+
+chai.use(sinonChai);
 
 describe('When rendering text', function () {
 	var ebookr;
@@ -80,4 +84,13 @@ describe('When rendering text', function () {
 		ebookr.parse('<foo /> <foo /> <foo />').render();
 		expect(renderer.calledThrice).to.be.true;
 	});
+
+	it('should render multiple tags with different attributes', function () {
+		var renderer = sinon.spy();
+		ebookr.addRenderer('foo', renderer);
+		ebookr.parse('<foo one="42" /> <foo one="666" />').render();
+		expect(renderer.calledTwice).to.be.true;
+		expect(renderer).to.have.been.calledWith('42', undefined);
+		expect(renderer).to.have.been.calledWith('666', undefined);
+	})
 });

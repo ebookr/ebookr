@@ -75,4 +75,14 @@ describe('When parsing text', function () {
 			ebookr.parse('<foo><foo></foo>');
 		}).to.throw(/Unbalanced tags found/);
 	});
+
+	it('should parse multiple tags with different attributes', function () {
+		ebookr.addParser('foo', function (one) {
+			return one;
+		});
+		ebookr.parse('<foo one="42" /> <foo one="666" />');
+		expect(ebookr.tags.map(function (tag) {
+			return tag.parsed;
+		})).to.eql(['42', '666']);
+	})
 });
