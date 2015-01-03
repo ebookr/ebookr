@@ -63,27 +63,31 @@ describe('When converting content', function () {
 		});
 
 		it('should execute pandoc', function () {
-			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { to: 'html5' });
+			expect(pandoc.convert).to.have.been.calledWith('tmp.md');
 		});
 	})
 
 	describe('With options', function () {
-		it('should pass on metadata', function () {
+		beforeEach(function () {
 			ebookr = mockEbookr();
-			ebookr.convert('# test', { metadata: {foo: '42', bar: true} });
+		});
+
+		it('should pass on metadata', function () {
+			ebookr.option.set('metadata', { foo: '42', bar: true });
+			ebookr.convert('# test');
 			expect(ebookr.metadata.get('foo')).to.equal('42');
 			expect(ebookr.metadata.get('bar')).to.be.true;
 		});
 
 		it('should pass metadata as file', function () {
-			ebookr = mockEbookr();
-			ebookr.convert('# test', { metadataFile: 'test.yaml' });
+			ebookr.option.set('metadataFile', 'test.yaml');
+			ebookr.convert('# test');
 			expect(metadata.loadYAML).to.have.been.calledWith('test.yaml');
 		});
 
 		it('should support adding extensions', function () {
-			ebookr = mockEbookr();
-			ebookr.convert('# test', { extensions: ['test'] });
+			ebookr.option.set('extensions', ['test']);
+			ebookr.convert('# test');
 			expect(extensions.extend).to.have.been.calledWith('ebookr-test');
 		});
 	});

@@ -26,7 +26,7 @@ describe('When using the CLI', function () {
 			}),
 			'./ebookr/converter': converter,
 			'./ebookr/extensions': extensions
-		});
+		}).new();
 	};
 
 	it('should be able to log version', function () {
@@ -34,10 +34,9 @@ describe('When using the CLI', function () {
 		expect(mockedConsole.log).to.have.been.calledWithMatch(/ebookr v/);
 	});
 
-	it('should be pass on args', function () {
-		var args = { argv: { remain: ['test'] } };
-		mockEbookr(args).cli();
-		expect(converter.convertFile).to.have.been.calledWith(['test'], args);
+	it('should convert files', function () {
+		mockEbookr({ argv: { remain: ['test'] } }).cli();
+		expect(converter.convertFile).to.have.been.calledWith(['test']);
 	});
 
 	it('should warn if no files given', function () {
@@ -47,15 +46,11 @@ describe('When using the CLI', function () {
 	});
 
 	it('should parse metadata', function () {
-		mockEbookr({ argv: { remain: ['test'] }, metadata: ['foo=42', 'bar'] }).cli();
-		expect(converter.convertFile).to.have.been.calledWith(['test'], {
-			argv: {
-				remain: ['test']
-			},
-			metadata: {
-				foo: '42',
-				bar: true
-			}
+		var ebookr = mockEbookr({ argv: { remain: ['test'] }, metadata: ['foo=42', 'bar'] });
+		ebookr.cli();
+		expect(ebookr.option.get('metadata')).to.eql({
+			foo: '42',
+			bar: true
 		});
 	});
 });

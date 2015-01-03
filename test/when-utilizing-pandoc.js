@@ -53,18 +53,21 @@ describe('When utilizing pandoc', function () {
 	});
 
 	it('should support option "output"', function () {
-		ebookr.pandoc('test.md', { output: 'test.html' });
+		ebookr.option.set('output', 'test.html');
+		ebookr.pandoc('test.md');
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -o test.html');
 	});
 
 	it('should support option "to"', function () {
-		ebookr.pandoc('test.md', { to: 'html5' });
+		ebookr.option.set('to', 'html5');
+		ebookr.pandoc('test.md');
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc test.md -t html5');
 	});
 
 	describe('When using metadataFile', function () {
 		beforeEach(function () {
-			ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
+			ebookr.option.set('metadataFile', 'metadata.yaml');
+			ebookr.pandoc('test.md');
 		});
 
 		it('creates temporary metadataend', function () {
@@ -82,13 +85,15 @@ describe('When utilizing pandoc', function () {
 
 	it('should set metadata for pandoc if accumulated metadata differs from metadata.yaml', function () {
 		ebookr.metadata.extend({ foo: 42, bar: 'new'});
-		ebookr.pandoc('test.md', { metadataFile: 'metadata.yaml' });
+		ebookr.option.set('metadataFile', 'metadata.yaml');
+		ebookr.pandoc('test.md');
 		expect(shell.exec).to.have.been.calledWithMatch('pandoc metadata.yaml metadataend test.md -M foo=42 -M bar=new');
 	});
 
 	describe('When converting to MOBI', function () {
 		beforeEach(function () {
-			ebookr.pandoc('test.md', { output: 'test.mobi' });
+			ebookr.option.set('output', 'test.mobi');
+			ebookr.pandoc('test.md');
 		});
 
 		it('should execute pandoc to create epub file', function () {

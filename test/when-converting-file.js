@@ -67,7 +67,7 @@ describe('When converting file', function () {
 		});
 
 		it('should execute pandoc', function () {
-			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { to: 'html5' });
+			expect(pandoc.convert).to.have.been.calledWith('tmp.md');
 		});
 	});
 
@@ -76,13 +76,6 @@ describe('When converting file', function () {
 			ebookr.convertFile(['test.md', 'test2.md']);
 			expect(fs.readFileSync).to.have.been.calledWith('test.md', 'utf-8');
 			expect(fs.readFileSync).to.have.been.calledWith('test2.md', 'utf-8');
-		});
-	});
-
-	describe('With output file given', function () {
-		it('should create file', function () {
-			ebookr.convertFile(['test.md'], { output: 'test.html' });
-			expect(pandoc.convert).to.have.been.calledWith('tmp.md', { output: 'test.html' });
 		});
 	});
 });

@@ -11,4 +11,12 @@ describe('When instantiating ebookr', function () {
 		ebookr.addParser('test', function() {});
 		expect(ebookr.new().tokens).to.be.empty;
 	});
+
+	it('should set metadata', function () {
+		expect(ebookr.metadata).to.exist;
+	});
+
+	it('should set option', function () {
+		expect(ebookr.option).to.exist;
+	});
 });
