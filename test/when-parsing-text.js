@@ -44,23 +44,12 @@ describe('When parsing text', function () {
 		expect(bar).to.be.undefined;
 	});
 
-	it('should parse (fake) tags', function () {
-		var spy = sinon.spy();
-		ebookr.addParser('/foo', spy);
-		ebookr.parse('foo </foo> bar');
-		expect(spy.calledOnce).to.be.true;
-		ebookr.addParser('foo', spy);
-		ebookr.parse('foo <foo /> bar <foo />');
-		expect(spy.calledThrice).to.be.true;
-	});
-
 	it('should parse open tags', function () {
 		var parsedText;
 		ebookr.addParsers({
 			'foo': function (text) {
 				parsedText = text;
-			},
-			'/foo': function () {}
+			}
 		});
 		ebookr.parse('<foo>test</foo>');
 		expect(parsedText).to.equal('test');
@@ -69,7 +58,6 @@ describe('When parsing text', function () {
 	it('should notify unbalanced tags', function () {
 		ebookr.addParsers({
 			'foo': noop,
-			'/foo': noop
 		});
 		expect(function () {
 			ebookr.parse('<foo><foo></foo>');

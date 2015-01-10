@@ -22,7 +22,6 @@ describe('When rendering text', function () {
 		ebookr.addParser('foo', function (one, two) {
 			return [one, two];
 		});
-		ebookr.addParser('/foo', function () {});
 	});
 
 	it('should render tokens', function () {
@@ -47,14 +46,19 @@ describe('When rendering text', function () {
 	it('should parse open tags', function () {
 		ebookr.addRenderer('foo', function () {
 			return '{';
-		});
-		ebookr.addRenderer('/foo', function () {
+		}, function () {
 			return '}';
-		})
+		});
 		expect(ebookr.parse('foo <foo>test</foo> bar').render()).to.equal('foo {test} bar');
 	});
 
-	it('should parse (fake) tags', function () {
+	it('should render nested open tags', function () {
+		ebookr.addRenderer('foo', function () { return '{'; }, function () { return '}'; });
+		ebookr.addRenderer('bar', function () { return '['; }, function () { return ']'; });
+		expect(ebookr.parse('<foo><bar>test</bar></foo>').render()).to.equal('{[test]}');
+	});
+
+	it('should parse closed tags', function () {
 		ebookr.addRenderer('foo', function () {
 			return 'test';
 		});
@@ -92,5 +96,5 @@ describe('When rendering text', function () {
 		expect(renderer.calledTwice).to.be.true;
 		expect(renderer).to.have.been.calledWith('42', undefined);
 		expect(renderer).to.have.been.calledWith('666', undefined);
-	})
+	});
 });
