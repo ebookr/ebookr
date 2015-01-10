@@ -84,5 +84,27 @@ describe('When parsing text', function () {
 		expect(ebookr.tags.map(function (tag) {
 			return tag.parsed;
 		})).to.eql(['42', '666']);
-	})
+	});
+
+	describe('With special characters', function () {
+		beforeEach(function () {
+			ebookr.addParser('foo', function (one) {
+				return one;
+			});
+		});
+
+		it('should ignore >-sign', function () {
+			ebookr.parse('<foo one="42" /> >> >>> foo<foo one="666" />');
+			expect(ebookr.tags.map(function (tag) {
+				return tag.parsed;
+			})).to.eql(['42', '666']);
+		});
+
+		it('should ignore <-sign', function () {
+			ebookr.parse('<foo one="42" />< << <<< foo<foo one="666" />');
+			expect(ebookr.tags.map(function (tag) {
+				return tag.parsed;
+			})).to.eql(['42', '666']);
+		});
+	});
 });
