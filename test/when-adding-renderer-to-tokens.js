@@ -10,9 +10,7 @@ describe('When adding renderer to tokens', function () {
 	it('should be able to add renderer individually', function () {
 		var fn = function () {};
 		ebookr.addRenderer('foo', fn);
-		expect(ebookr.tokens.foo).to.be.an('object');
 		expect(ebookr.tokens.foo.renderer).to.equal(fn);
-		expect(ebookr.tokens.foo.end).not.to.exist;
 	});
 
 	it('should be able to add renderers en masse', function () {
@@ -20,11 +18,9 @@ describe('When adding renderer to tokens', function () {
 				fn2 = function (foo, bar) {};
 		ebookr.addRenderers({
 			'test1': fn1,
-			'test2': [fn2, fn2]
+			'test2': fn2
 		});
 		expect(ebookr.tokens.test1.renderer).to.equal(fn1);
-		expect(ebookr.tokens.test1.end).not.to.exist;
 		expect(ebookr.tokens.test2.renderer).to.equal(fn2);
-		expect(ebookr.tokens.test2.end).to.equal(fn2);
 	});
 });

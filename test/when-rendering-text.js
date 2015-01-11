@@ -2,7 +2,8 @@ var chai = require('chai'),
 		expect = chai.expect,
 		sinonChai = require('sinon-chai'),
 		mockrequire = require('mockrequire'),
-		sinon = require('sinon');
+		sinon = require('sinon'),
+		util = require('util');
 
 chai.use(sinonChai);
 
@@ -19,8 +20,8 @@ describe('When rendering text', function () {
 				'./util': { warn: warnSpy }
 			})
 		}).new();
-		ebookr.addParser('foo', function (one, two) {
-			return [one, two];
+		ebookr.addParser('foo', function (one, two, text) {
+			return [one, two, text];
 		});
 	});
 
@@ -43,18 +44,23 @@ describe('When rendering text', function () {
 		expect(ebookr.parse('foo <foo two="42"> bar').render()).to.equal('foo undefined42 bar');
 	});
 
-	it('should parse open tags', function () {
-		ebookr.addRenderer('foo', function () {
-			return '{';
-		}, function () {
-			return '}';
+	it('should render open tags', function () {
+		ebookr.addRenderer('foo', function (one, two, text) {
+			return util.format('{%s}', text);
 		});
 		expect(ebookr.parse('foo <foo>test</foo> bar').render()).to.equal('foo {test} bar');
 	});
 
 	it('should render nested open tags', function () {
-		ebookr.addRenderer('foo', function () { return '{'; }, function () { return '}'; });
-		ebookr.addRenderer('bar', function () { return '['; }, function () { return ']'; });
+		ebookr.addRenderer('foo', function (one, two, text) {
+			return util.format('{%s}', text);
+		});
+		ebookr.addParser('bar', function (text) {
+			return [text];
+		});
+		ebookr.addRenderer('bar', function (text) {
+			return util.format('[%s]', text);
+		});
 		expect(ebookr.parse('<foo><bar>test</bar></foo>').render()).to.equal('{[test]}');
 	});
 
